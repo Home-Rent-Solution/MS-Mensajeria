@@ -58,4 +58,14 @@ public class MensajeriaService {
         return repository.findByIdReceptor(idReceptor);
     }
 
+    // Buscar conversación entre emisor y receptor
+    public List<Mensajeria> buscarConversacion(Long idEmisor,
+                                               Long idReceptor) {
+
+        return repository.findByIdEmisorAndIdReceptor(
+                idEmisor,
+                idReceptor
+        );
+    }
+
 }

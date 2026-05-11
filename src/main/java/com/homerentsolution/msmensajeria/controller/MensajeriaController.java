@@ -58,4 +58,13 @@ public class MensajeriaController {
 
         return service.buscarPorReceptor(id);
     }
+
+    // Buscar conversación entre emisor y receptor
+    @GetMapping("/conversacion")
+    public List<Mensajeria> buscarConversacion(
+            @RequestParam Long emisor,
+            @RequestParam Long receptor) {
+
+        return service.buscarConversacion(emisor, receptor);
+    }
 }
