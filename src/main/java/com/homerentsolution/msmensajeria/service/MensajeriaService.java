@@ -14,11 +14,18 @@ public class MensajeriaService {
     @Autowired
     private MensajeriaRepository repository;
 
+    // el CRUD completo
     public List<Mensajeria> listar() {
         return repository.findAll();
     }
 
     public Mensajeria guardar(Mensajeria mensaje) {
+
+        // Regla de negocio
+        if (mensaje.getIdEmisor().equals(mensaje.getIdReceptor())) {
+            throw new RuntimeException("No puedes enviarte mensajes a ti mismo");
+        }
+        //actualizado fecha automática
         mensaje.setFecha(LocalDateTime.now());
         return repository.save(mensaje);
     }
@@ -40,5 +47,6 @@ public class MensajeriaService {
     public void eliminar(Long id) {
         repository.deleteById(id);
     }
+
 
 }
