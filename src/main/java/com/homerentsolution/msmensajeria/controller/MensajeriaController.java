@@ -45,4 +45,17 @@ public class MensajeriaController {
     public void eliminar(@PathVariable Long id) {
         service.eliminar(id);
     }
+
+    // Buscar mensajes por emisor
+    @GetMapping("/emisor/{id}")
+    public List<Mensajeria> buscarPorEmisor(@PathVariable Long id) {
+        return service.buscarPorEmisor(id);
+    }
+
+    // Buscar mensajes por receptor
+    @GetMapping("/receptor/{id}")
+    public List<Mensajeria> buscarPorReceptor(@PathVariable Long id) {
+
+        return service.buscarPorReceptor(id);
+    }
 }

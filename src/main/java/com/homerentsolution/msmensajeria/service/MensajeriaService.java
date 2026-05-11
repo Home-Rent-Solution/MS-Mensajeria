@@ -48,5 +48,14 @@ public class MensajeriaService {
         repository.deleteById(id);
     }
 
+    // Buscar mensajes por emisor
+    public List<Mensajeria> buscarPorEmisor(Long idEmisor) {
+        return repository.findByIdEmisorOrderByFechaDesc(idEmisor);
+    }
+
+    // Buscar mensajes por receptor
+    public List<Mensajeria> buscarPorReceptor(Long idReceptor) {
+        return repository.findByIdReceptor(idReceptor);
+    }
 
 }
