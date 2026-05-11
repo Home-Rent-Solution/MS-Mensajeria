@@ -1,6 +1,9 @@
 package com.homerentsolution.msmensajeria.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.time.LocalDateTime;
 
 @Entity
@@ -13,6 +16,8 @@ public class Mensajeria {
     private String contenido;
     private LocalDateTime fecha;
     private Long idEmisor;
+    @Getter
+    @Setter
     private Long idReceptor;
 
     public LocalDateTime getFecha() {
@@ -21,4 +26,21 @@ public class Mensajeria {
     public void setFecha(LocalDateTime fecha) {
         this.fecha = fecha;
     }
+
+    public String getContenido() {
+        return contenido;
+    }
+
+    public void setContenido(String contenido) {
+        this.contenido = contenido;
+    }
+
+    public Long getIdEmisor() {
+        return idEmisor;
+    }
+
+    public void setIdEmisor(Long idEmisor) {
+        this.idEmisor = idEmisor;
+    }
+
 }

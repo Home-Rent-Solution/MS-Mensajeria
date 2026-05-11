@@ -22,4 +22,23 @@ public class MensajeriaService {
         mensaje.setFecha(LocalDateTime.now());
         return repository.save(mensaje);
     }
+    public Mensajeria buscarPorId(Long id){
+        return repository.findById(id).orElse(null);
+    }
+    public Mensajeria actualizar(Long id, Mensajeria mensajeActualizado) {
+        Mensajeria mensaje = repository.findById(id).orElse(null);
+
+        if (mensaje != null) {
+            mensaje.setContenido(mensajeActualizado.getContenido());
+            mensaje.setIdEmisor(mensajeActualizado.getIdEmisor());
+            mensaje.setIdReceptor(mensajeActualizado.getIdReceptor());
+            return repository.save(mensaje);
+        }
+        return null;
+    }
+
+    public void eliminar(Long id) {
+        repository.deleteById(id);
+    }
+
 }
