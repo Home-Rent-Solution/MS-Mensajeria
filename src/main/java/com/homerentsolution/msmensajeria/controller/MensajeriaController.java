@@ -1,12 +1,12 @@
-package controller;
+package com.homerentsolution.msmensajeria.controller;
 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import service.MensajeriaService;
-import model.Mensajeria;
+import com.homerentsolution.msmensajeria.service.MensajeriaService;
+import com.homerentsolution.msmensajeria.model.Mensajeria;
 
 @RestController
 @RequestMapping("/api/v1/mensajes")

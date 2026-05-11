@@ -1,13 +1,12 @@
-package service;
+package com.homerentsolution.msmensajeria.service;
 
+import com.homerentsolution.msmensajeria.model.Mensajeria;
+import com.homerentsolution.msmensajeria.repository.MensajeriaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
-import model.Mensajeria;
-import repository.MensajeriaRepository;
 
 @Service
 public class MensajeriaService {

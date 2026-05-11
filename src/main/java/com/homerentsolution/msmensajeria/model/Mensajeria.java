@@ -1,4 +1,4 @@
-package model;
+package com.homerentsolution.msmensajeria.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
