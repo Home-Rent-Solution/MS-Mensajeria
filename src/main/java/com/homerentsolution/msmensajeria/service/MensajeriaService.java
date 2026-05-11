@@ -1,5 +1,7 @@
 package com.homerentsolution.msmensajeria.service;
 
+import com.homerentsolution.msmensajeria.dto.MensajeriaRequestDTO;
+import com.homerentsolution.msmensajeria.dto.MensajeriaResponseDTO;
 import com.homerentsolution.msmensajeria.model.Mensajeria;
 import com.homerentsolution.msmensajeria.repository.MensajeriaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,23 +17,54 @@ public class MensajeriaService {
     private MensajeriaRepository repository;
 
     // el CRUD completo
+    //listar todo mensajeria
     public List<Mensajeria> listar() {
+
         return repository.findAll();
     }
 
-    public Mensajeria guardar(Mensajeria mensaje) {
+    //guardar en mesjaeriaResponseDto
+    public MensajeriaResponseDTO guardar(MensajeriaRequestDTO dto) {
+
+        // Convertir DTO a Entity
+        Mensajeria mensaje = new Mensajeria();
+
+        mensaje.setContenido(dto.getContenido());
+        mensaje.setIdEmisor(dto.getIdEmisor());
+        mensaje.setIdReceptor(dto.getIdReceptor());
 
         // Regla de negocio
         if (mensaje.getIdEmisor().equals(mensaje.getIdReceptor())) {
-            throw new RuntimeException("No puedes enviarte mensajes a ti mismo");
+            throw new RuntimeException(
+                    "No puedes enviarte mensajes a ti mismo"
+            );
         }
-        //actualizado fecha automática
+
+        // Fecha automática
         mensaje.setFecha(LocalDateTime.now());
-        return repository.save(mensaje);
+
+        // Guardar en BD
+        Mensajeria guardado = repository.save(mensaje);
+
+        // Convertir Entity a ResponseDTO
+        MensajeriaResponseDTO response = new MensajeriaResponseDTO();
+
+        response.setIdMensaje(guardado.getIdMensaje());
+        response.setContenido(guardado.getContenido());
+        response.setIdEmisor(guardado.getIdEmisor());
+        response.setIdReceptor(guardado.getIdReceptor());
+        response.setFecha(guardado.getFecha());
+
+        return response;
     }
+
+    //buscar por Id
     public Mensajeria buscarPorId(Long id){
+
         return repository.findById(id).orElse(null);
     }
+
+    //actualizar
     public Mensajeria actualizar(Long id, Mensajeria mensajeActualizado) {
         Mensajeria mensaje = repository.findById(id).orElse(null);
 
@@ -44,6 +77,7 @@ public class MensajeriaService {
         return null;
     }
 
+    //eliminar
     public void eliminar(Long id) {
         repository.deleteById(id);
     }

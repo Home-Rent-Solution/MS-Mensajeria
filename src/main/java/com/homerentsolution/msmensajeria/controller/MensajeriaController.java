@@ -2,6 +2,9 @@ package com.homerentsolution.msmensajeria.controller;
 
 import java.util.List;
 
+import com.homerentsolution.msmensajeria.dto.MensajeriaRequestDTO;
+import com.homerentsolution.msmensajeria.dto.MensajeriaResponseDTO;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,10 +25,12 @@ public class MensajeriaController {
         return service.listar();
     }
 
-    //guardar en body
+    //guardar mensajeriaRequestDto queda desacoplado de la entidad
     @PostMapping
-    public Mensajeria guardar(@RequestBody Mensajeria mensaje) {
-        return service.guardar(mensaje);
+    public MensajeriaResponseDTO guardar(
+            @Valid @RequestBody MensajeriaRequestDTO dto) {
+
+        return service.guardar(dto);
     }
 
     //buscar por Id
