@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 
 import com.homerentsolution.msmensajeria.service.MensajeriaService;
 import com.homerentsolution.msmensajeria.model.Mensajeria;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RestController
 @RequestMapping("/api/v1/mensajes")
@@ -21,11 +23,16 @@ public class MensajeriaController {
     @Autowired
     private MensajeriaService service;
 
+    // Logger para registrar eventos del controller
+    private static final Logger log =
+            LoggerFactory.getLogger(MensajeriaController.class);
+
     // Listar
     @GetMapping
     public ResponseEntity<List<Mensajeria>> listar() {
-
-        return ResponseEntity.ok(service.listar());
+        log.info("Listando todos los mensajes");
+        return ResponseEntity.ok(
+                service.listar());
     }
 
     //guardar RequestDto responda responseentity- devuelve 201 created
@@ -33,7 +40,14 @@ public class MensajeriaController {
     public ResponseEntity<MensajeriaResponseDTO> guardar(
             @Valid @RequestBody MensajeriaRequestDTO dto) {
 
-        MensajeriaResponseDTO respuesta = service.guardar(dto);
+        log.info(
+                "Guardando mensaje desde emisor {} hacia receptor {}",
+                dto.getIdEmisor(),
+                dto.getIdReceptor()
+        );
+
+        MensajeriaResponseDTO respuesta =
+                service.guardar(dto);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -45,6 +59,8 @@ public class MensajeriaController {
     public ResponseEntity<Mensajeria> buscar(
             @PathVariable Long id) {
 
+        log.info("Buscando mensaje con ID: {}", id);
+
         return ResponseEntity.ok(
                 service.buscarPorId(id));
     }
@@ -54,6 +70,8 @@ public class MensajeriaController {
     public ResponseEntity<Mensajeria> actualizar(
             @PathVariable Long id,
             @RequestBody Mensajeria mensaje) {
+
+        log.info("Actualizando mensaje con ID: {}", id);
 
         Mensajeria actualizado = service.actualizar(id, mensaje);
 
@@ -65,6 +83,8 @@ public class MensajeriaController {
     public ResponseEntity<Void> eliminar(
             @PathVariable Long id) {
 
+        log.warn("Eliminando mensaje con ID: {}", id);
+
         service.eliminar(id);
 
         return ResponseEntity.noContent().build();
@@ -75,6 +95,8 @@ public class MensajeriaController {
     public ResponseEntity<List<Mensajeria>> buscarPorEmisor(
             @PathVariable Long id) {
 
+        log.info("Buscando mensajes del emisor: {}", id);
+
         return ResponseEntity.ok(
                 service.buscarPorEmisor(id));
     }
@@ -83,6 +105,8 @@ public class MensajeriaController {
     @GetMapping("/receptor/{id}")
     public ResponseEntity<List<Mensajeria>> buscarPorReceptor(
             @PathVariable Long id) {
+
+        log.info("Buscando mensajes del receptor: {}", id);
 
         return ResponseEntity.ok(
                 service.buscarPorReceptor(id));
@@ -93,6 +117,12 @@ public class MensajeriaController {
     public ResponseEntity<List<Mensajeria>> buscarConversacion(
             @RequestParam Long emisor,
             @RequestParam Long receptor) {
+
+        log.info(
+                "Buscando conversación entre emisor {} y receptor {}",
+                emisor,
+                receptor
+        );
 
         return ResponseEntity.ok(
                 service.buscarConversacion(emisor, receptor));
