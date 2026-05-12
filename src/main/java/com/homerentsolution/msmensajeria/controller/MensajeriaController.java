@@ -6,6 +6,8 @@ import com.homerentsolution.msmensajeria.dto.MensajeriaRequestDTO;
 import com.homerentsolution.msmensajeria.dto.MensajeriaResponseDTO;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.homerentsolution.msmensajeria.service.MensajeriaService;
@@ -19,57 +21,80 @@ public class MensajeriaController {
     @Autowired
     private MensajeriaService service;
 
-    //metodo Listar
+    // Listar
     @GetMapping
-    public List<Mensajeria> listar() {
-        return service.listar();
+    public ResponseEntity<List<Mensajeria>> listar() {
+
+        return ResponseEntity.ok(service.listar());
     }
 
-    //guardar mensajeriaRequestDto queda desacoplado de la entidad
+    //guardar RequestDto responda responseentity- devuelve 201 created
     @PostMapping
-    public MensajeriaResponseDTO guardar(
+    public ResponseEntity<MensajeriaResponseDTO> guardar(
             @Valid @RequestBody MensajeriaRequestDTO dto) {
 
-        return service.guardar(dto);
+        MensajeriaResponseDTO respuesta = service.guardar(dto);
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(respuesta);
     }
 
     //buscar por Id
     @GetMapping("/{id}")
-    public Mensajeria buscar(@PathVariable Long id) {
-        return service.buscarPorId(id);
+    public ResponseEntity<Mensajeria> buscar(
+            @PathVariable Long id) {
+
+        return ResponseEntity.ok(
+                service.buscarPorId(id));
     }
 
-    //Put para actualizar
+    //Put para actualizar, devuelve 200 ok
     @PutMapping("/{id}")
-    public Mensajeria actualizar(@PathVariable Long id, @RequestBody Mensajeria mensaje) {
-        return service.actualizar(id, mensaje);
+    public ResponseEntity<Mensajeria> actualizar(
+            @PathVariable Long id,
+            @RequestBody Mensajeria mensaje) {
+
+        Mensajeria actualizado = service.actualizar(id, mensaje);
+
+        return ResponseEntity.ok(actualizado);
     }
 
-    //eliminar
+    //eliminar y devuelve 204  no content
     @DeleteMapping("/{id}")
-    public void eliminar(@PathVariable Long id) {
+    public ResponseEntity<Void> eliminar(
+            @PathVariable Long id) {
+
         service.eliminar(id);
+
+        return ResponseEntity.noContent().build();
     }
 
     // Buscar mensajes por emisor
     @GetMapping("/emisor/{id}")
-    public List<Mensajeria> buscarPorEmisor(@PathVariable Long id) {
-        return service.buscarPorEmisor(id);
+    public ResponseEntity<List<Mensajeria>> buscarPorEmisor(
+            @PathVariable Long id) {
+
+        return ResponseEntity.ok(
+                service.buscarPorEmisor(id));
     }
 
     // Buscar mensajes por receptor
     @GetMapping("/receptor/{id}")
-    public List<Mensajeria> buscarPorReceptor(@PathVariable Long id) {
+    public ResponseEntity<List<Mensajeria>> buscarPorReceptor(
+            @PathVariable Long id) {
 
-        return service.buscarPorReceptor(id);
+        return ResponseEntity.ok(
+                service.buscarPorReceptor(id));
     }
 
     // Buscar conversación entre emisor y receptor
     @GetMapping("/conversacion")
-    public List<Mensajeria> buscarConversacion(
+    public ResponseEntity<List<Mensajeria>> buscarConversacion(
             @RequestParam Long emisor,
             @RequestParam Long receptor) {
 
-        return service.buscarConversacion(emisor, receptor);
+        return ResponseEntity.ok(
+                service.buscarConversacion(emisor, receptor));
     }
 }
