@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.homerentsolution.msmensajeria.dto.MensajeriaRequestDTO;
 import com.homerentsolution.msmensajeria.dto.MensajeriaResponseDTO;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,7 @@ import com.homerentsolution.msmensajeria.model.Mensajeria;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@SecurityRequirement(name = "bearerAuth")
 @RestController
 @RequestMapping("/api/v1/mensajes")
 public class MensajeriaController {

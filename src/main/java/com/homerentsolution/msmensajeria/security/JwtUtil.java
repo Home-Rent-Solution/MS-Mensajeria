@@ -1,5 +1,6 @@
 package com.homerentsolution.msmensajeria.security;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
@@ -15,6 +16,7 @@ public class JwtUtil {
                     SignatureAlgorithm.HS256
             );
 
+    // generar token
     public static String generarToken(
             String username) {
 
@@ -29,5 +31,41 @@ public class JwtUtil {
                 )
                 .signWith(KEY)
                 .compact();
+    }
+
+    // validar token
+    public static boolean validarToken(
+            String token) {
+
+        try {
+
+            Jwts.parser()
+                    .verifyWith(
+                            (javax.crypto.SecretKey) KEY
+                    )
+                    .build()
+                    .parseSignedClaims(token);
+
+            return true;
+
+        } catch (Exception e) {
+
+            return false;
+        }
+    }
+
+    // obtener usuario
+    public static String obtenerUsername(
+            String token) {
+
+        Claims claims = Jwts.parser()
+                .verifyWith(
+                        (javax.crypto.SecretKey) KEY
+                )
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+
+        return claims.getSubject();
     }
 }
