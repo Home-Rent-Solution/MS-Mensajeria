@@ -59,47 +59,104 @@ public class MensajeriaService {
     }
 
     //buscar por Id
-    public Mensajeria buscarPorId(Long id){
+    public Mensajeria buscarPorId(Long id) {
 
-        return repository.findById(id).orElse(null);
+        return repository.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException(
+                                "Mensaje no encontrado"
+                        ));
     }
+
 
     //actualizar
     public Mensajeria actualizar(Long id, Mensajeria mensajeActualizado) {
-        Mensajeria mensaje = repository.findById(id).orElse(null);
 
-        if (mensaje != null) {
-            mensaje.setContenido(mensajeActualizado.getContenido());
-            mensaje.setIdEmisor(mensajeActualizado.getIdEmisor());
-            mensaje.setIdReceptor(mensajeActualizado.getIdReceptor());
-            return repository.save(mensaje);
-        }
-        return null;
+        Mensajeria mensaje = repository.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException(
+                                "Mensaje no encontrado"
+                        ));
+
+        mensaje.setContenido(
+                mensajeActualizado.getContenido()
+        );
+
+        mensaje.setIdEmisor(
+                mensajeActualizado.getIdEmisor()
+        );
+
+        mensaje.setIdReceptor(
+                mensajeActualizado.getIdReceptor()
+        );
+
+        return repository.save(mensaje);
     }
 
     //eliminar
     public void eliminar(Long id) {
-        repository.deleteById(id);
+
+        Mensajeria mensaje = repository.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException(
+                                "Mensaje no encontrado"
+                        ));
+
+        repository.delete(mensaje);
     }
 
     // Buscar mensajes por emisor
     public List<Mensajeria> buscarPorEmisor(Long idEmisor) {
-        return repository.findByIdEmisorOrderByFechaDesc(idEmisor);
+
+        List<Mensajeria> mensajes =
+                repository.findByIdEmisorOrderByFechaDesc(
+                        idEmisor
+                );
+
+        if (mensajes.isEmpty()) {
+
+            throw new RuntimeException(
+                    "No existen mensajes para este emisor"
+            );
+        }
+
+        return mensajes;
     }
 
     // Buscar mensajes por receptor
     public List<Mensajeria> buscarPorReceptor(Long idReceptor) {
-        return repository.findByIdReceptor(idReceptor);
+
+        List<Mensajeria> mensajes =
+                repository.findByIdReceptor(idReceptor);
+
+        if (mensajes.isEmpty()) {
+
+            throw new RuntimeException(
+                    "No existen mensajes para este receptor"
+            );
+        }
+
+        return mensajes;
     }
 
     // Buscar conversación entre emisor y receptor
     public List<Mensajeria> buscarConversacion(Long idEmisor,
                                                Long idReceptor) {
 
-        return repository.findByIdEmisorAndIdReceptor(
-                idEmisor,
-                idReceptor
-        );
+        List<Mensajeria> mensajes =
+                repository.findByIdEmisorAndIdReceptor(
+                        idEmisor,
+                        idReceptor
+                );
+
+        if (mensajes.isEmpty()) {
+
+            throw new RuntimeException(
+                    "No existe conversación entre los usuarios"
+            );
+        }
+
+        return mensajes;
     }
 
 }

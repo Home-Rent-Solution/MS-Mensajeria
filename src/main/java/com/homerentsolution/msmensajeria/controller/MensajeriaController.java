@@ -27,7 +27,7 @@ public class MensajeriaController {
     private static final Logger log =
             LoggerFactory.getLogger(MensajeriaController.class);
 
-    // Listar
+    // Listar con ResponseEntity reponde 200 ok
     @GetMapping
     public ResponseEntity<List<Mensajeria>> listar() {
         log.info("Listando todos los mensajes");
@@ -54,7 +54,7 @@ public class MensajeriaController {
                 .body(respuesta);
     }
 
-    //buscar por Id
+    //buscar por Id, en responseEntity responde 200 ok
     @GetMapping("/{id}")
     public ResponseEntity<Mensajeria> buscar(
             @PathVariable Long id) {
