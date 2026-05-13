@@ -6,7 +6,7 @@ import com.homerentsolution.msmensajeria.model.Mensajeria;
 import com.homerentsolution.msmensajeria.repository.MensajeriaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import com.homerentsolution.msmensajeria.client.InquilinoClient;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -16,8 +16,12 @@ public class MensajeriaService {
     @Autowired
     private MensajeriaRepository repository;
 
+    //se agrega Feign para comunicación entre servicios
+    @Autowired
+    private InquilinoClient inquilinoClient;
+
     // el CRUD completo
-    //listar todo mensajeria
+    //listartodo mensajeria
     public List<Mensajeria> listar() {
 
         return repository.findAll();
@@ -39,7 +43,31 @@ public class MensajeriaService {
                     "No puedes enviarte mensajes a ti mismo"
             );
         }
+        // Validar existencia del emisor
+        Boolean emisorExiste =
+                inquilinoClient.validarInquilino(
+                        dto.getIdEmisor()
+                );
 
+        if (!emisorExiste) {
+
+            throw new RuntimeException(
+                    "El emisor no existe"
+            );
+        }
+
+        // Validar existencia del receptor
+        Boolean receptorExiste =
+                inquilinoClient.validarInquilino(
+                        dto.getIdReceptor()
+                );
+
+        if (!receptorExiste) {
+
+            throw new RuntimeException(
+                    "El receptor no existe"
+            );
+        }
         // Fecha automática
         mensaje.setFecha(LocalDateTime.now());
 
