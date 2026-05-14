@@ -1,41 +1,53 @@
 package com.homerentsolution.msmensajeria.exception;
 
 import org.springframework.http.HttpStatus;
+
 import org.springframework.http.ResponseEntity;
+
 import org.springframework.web.bind.annotation.ExceptionHandler;
+
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<Map<String, Object>>
-    manejarRuntimeException(RuntimeException ex) {
+    public ResponseEntity<ErrorResponse> manejarRuntime(
+            RuntimeException ex) {
 
-        Map<String, Object> error =
-                new HashMap<>();
+        ErrorResponse error =
+                new ErrorResponse(
 
-        error.put(
-                "timestamp",
-                LocalDateTime.now()
-        );
+                        ex.getMessage(),
 
-        error.put(
-                "mensaje",
-                ex.getMessage()
-        );
+                        HttpStatus.BAD_REQUEST.value(),
 
-        error.put(
-                "status",
-                HttpStatus.BAD_REQUEST.value()
-        );
+                        LocalDateTime.now()
+                );
 
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
+                .body(error);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> manejarGeneral(
+            Exception ex) {
+
+        ErrorResponse error =
+                new ErrorResponse(
+
+                        "Error interno del servidor",
+
+                        HttpStatus.INTERNAL_SERVER_ERROR.value(),
+
+                        LocalDateTime.now()
+                );
+
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(error);
     }
 }
