@@ -12,6 +12,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.http.HttpMethod;
 
 @Configuration
 public class SecurityConfig {
@@ -51,8 +52,33 @@ public class SecurityConfig {
                                 "/auth/**"
                         ).permitAll()
 
-                        // resto protegido
-                        .anyRequest().permitAll()
+                        // GET mensajes → USER y ADMIN
+                        .requestMatchers(
+                                HttpMethod.GET,
+                                "/api/v1/mensajes/**"
+                        ).hasAnyRole(
+                                "USER",
+                                "ADMIN"
+                        )
+
+                        // POST mensajes → ADMIN
+                        .requestMatchers(
+                                HttpMethod.POST,
+                                "/api/v1/mensajes/**"
+                        ).hasRole(
+                                "ADMIN"
+                        )
+
+                        // DELETE mensajes → ADMIN
+                        .requestMatchers(
+                                HttpMethod.DELETE,
+                                "/api/v1/mensajes/**"
+                        ).hasRole(
+                                "ADMIN"
+                        )
+
+                        // resto autenticado
+                        .anyRequest().authenticated()
                 )
 
                 .addFilterBefore(

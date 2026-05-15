@@ -18,11 +18,14 @@ public class JwtUtil {
 
     // generar token
     public static String generarToken(
-            String username) {
+            String username,
+            String role) {
 
         return Jwts.builder()
                 .subject(username)
+                .claim("role", role)
                 .issuedAt(new Date())
+
                 .expiration(
                         new Date(
                                 System.currentTimeMillis()

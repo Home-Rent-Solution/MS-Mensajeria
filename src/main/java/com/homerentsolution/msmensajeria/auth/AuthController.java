@@ -21,9 +21,12 @@ public class AuthController {
                 &&
                 request.getPassword().equals("1234")) {
 
+            String role = "ADMIN";
+
             String token =
                     JwtUtil.generarToken(
-                            request.getUsername()
+                            request.getUsername(),
+                            role
                     );
 
             Map<String, String> response =
