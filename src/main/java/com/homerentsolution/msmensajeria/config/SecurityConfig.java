@@ -41,12 +41,6 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(auth -> auth
 
-                        // swagger libre
-                        .requestMatchers(
-                                "/swagger-ui/**",
-                                "/v3/api-docs/**"
-                        ).permitAll()
-
                         // login libre
                         .requestMatchers(
                                 "/auth/**"

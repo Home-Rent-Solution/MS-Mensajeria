@@ -16,23 +16,40 @@ public class AuthController {
     public ResponseEntity<?> login(
             @RequestBody AuthRequest request) {
 
-        // usuario de prueba
         if (request.getUsername().equals("admin")
                 &&
                 request.getPassword().equals("1234")) {
 
-            String role = "ADMIN";
-
             String token =
                     JwtUtil.generarToken(
-                            request.getUsername(),
-                            role
+                            "admin",
+                            "ADMIN"
                     );
 
             Map<String, String> response =
                     new HashMap<>();
 
             response.put("token", token);
+            response.put("role", "ADMIN");
+
+            return ResponseEntity.ok(response);
+        }
+
+        if (request.getUsername().equals("cliente")
+                &&
+                request.getPassword().equals("1234")) {
+
+            String token =
+                    JwtUtil.generarToken(
+                            "cliente",
+                            "USER"
+                    );
+
+            Map<String, String> response =
+                    new HashMap<>();
+
+            response.put("token", token);
+            response.put("role", "USER");
 
             return ResponseEntity.ok(response);
         }

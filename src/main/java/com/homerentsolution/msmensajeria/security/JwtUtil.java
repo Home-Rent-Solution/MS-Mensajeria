@@ -71,4 +71,26 @@ public class JwtUtil {
 
         return claims.getSubject();
     }
+
+    // obtener rol
+    public static String obtenerRole(
+            String token) {
+
+        Claims claims = Jwts.parser()
+                .verifyWith(
+                        (javax.crypto.SecretKey) KEY
+                )
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+
+        return claims.get(
+                "role",
+                String.class
+        );
+    }
+
+
+
+
 }
