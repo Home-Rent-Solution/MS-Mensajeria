@@ -9,11 +9,16 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 
 import org.springframework.context.annotation.Configuration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
 
 @Configuration
 public class DataInitializer {
+
+    private static final Logger log =
+            LoggerFactory.getLogger(DataInitializer.class);
 
     @Bean
     CommandLineRunner initDatabase(
@@ -58,9 +63,7 @@ public class DataInitializer {
 
                 repository.save(mensaje2);
 
-                System.out.println(
-                        "Datos iniciales de mensajería cargados"
-                );
+                log.info("Datos iniciales de mensajeria cargados");
             }
         };
     }
