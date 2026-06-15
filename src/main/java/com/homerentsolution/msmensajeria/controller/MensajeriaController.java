@@ -69,11 +69,18 @@ public class MensajeriaController {
     @PutMapping("/{id}")
     public ResponseEntity<Mensajeria> actualizar(
             @PathVariable Long id,
-            @Valid @RequestBody Mensajeria mensaje) {
+            @Valid @RequestBody MensajeriaRequestDTO dto) {
 
         log.info("Actualizando mensaje con ID: {}", id);
 
-        Mensajeria actualizado = service.actualizar(id, mensaje);
+        Mensajeria mensaje = new Mensajeria();
+
+        mensaje.setContenido(dto.getContenido());
+        mensaje.setIdEmisor(dto.getIdEmisor());
+        mensaje.setIdReceptor(dto.getIdReceptor());
+
+        Mensajeria actualizado =
+                service.actualizar(id, mensaje);
 
         return ResponseEntity.ok(actualizado);
     }

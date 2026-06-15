@@ -8,6 +8,9 @@ public class ErrorResponse {
     private int status;
     private LocalDateTime fecha;
 
+    public ErrorResponse() {
+    }
+
     public ErrorResponse(
             String mensaje,
             int status,
@@ -22,9 +25,7 @@ public class ErrorResponse {
         return mensaje;
     }
 
-    public void setMensaje(
-            String mensaje) {
-
+    public void setMensaje(String mensaje) {
         this.mensaje = mensaje;
     }
 
@@ -32,9 +33,7 @@ public class ErrorResponse {
         return status;
     }
 
-    public void setStatus(
-            int status) {
-
+    public void setStatus(int status) {
         this.status = status;
     }
 
@@ -42,9 +41,7 @@ public class ErrorResponse {
         return fecha;
     }
 
-    public void setFecha(
-            LocalDateTime fecha) {
-
+    public void setFecha(LocalDateTime fecha) {
         this.fecha = fecha;
     }
 }

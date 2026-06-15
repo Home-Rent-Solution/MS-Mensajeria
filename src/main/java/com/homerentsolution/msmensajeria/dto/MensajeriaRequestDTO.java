@@ -18,9 +18,9 @@ public class MensajeriaRequestDTO {
 
     @Size(
             min = 3,
-            max = 500,
+            max = 100,
             message =
-                    "El mensaje debe tener entre 3 y 500 caracteres"
+                    "El mensaje debe tener entre 3 y 100 caracteres"
     )
     private String contenido;
 

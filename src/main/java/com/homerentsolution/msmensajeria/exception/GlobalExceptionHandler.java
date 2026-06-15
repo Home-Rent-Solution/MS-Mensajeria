@@ -1,19 +1,22 @@
 package com.homerentsolution.msmensajeria.exception;
 
-import org.springframework.http.HttpStatus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.web.bind.MethodArgumentNotValidException;
-
 import org.springframework.web.bind.annotation.ExceptionHandler;
-
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.LocalDateTime;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    private static final Logger log =
+            LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> manejarValidaciones(
@@ -23,16 +26,21 @@ public class GlobalExceptionHandler {
                 .getFieldErrors()
                 .stream()
                 .findFirst()
-                .map(error -> error.getField() + ": " + error.getDefaultMessage())
-                .orElse("Solicitud invalida");
+                .map(error ->
+                        error.getField()
+                                + ": "
+                                + error.getDefaultMessage())
+                .orElse("Solicitud inválida");
+
+        log.warn(
+                "Error de validación detectado: {}",
+                mensaje
+        );
 
         ErrorResponse error =
                 new ErrorResponse(
-
                         mensaje,
-
                         HttpStatus.BAD_REQUEST.value(),
-
                         LocalDateTime.now()
                 );
 
@@ -45,13 +53,15 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> manejarRuntime(
             RuntimeException ex) {
 
+        log.error(
+                "Error de negocio: {}",
+                ex.getMessage()
+        );
+
         ErrorResponse error =
                 new ErrorResponse(
-
                         ex.getMessage(),
-
                         HttpStatus.BAD_REQUEST.value(),
-
                         LocalDateTime.now()
                 );
 
@@ -64,13 +74,15 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> manejarGeneral(
             Exception ex) {
 
+        log.error(
+                "Error interno del servidor",
+                ex
+        );
+
         ErrorResponse error =
                 new ErrorResponse(
-
                         "Error interno del servidor",
-
                         HttpStatus.INTERNAL_SERVER_ERROR.value(),
-
                         LocalDateTime.now()
                 );
 

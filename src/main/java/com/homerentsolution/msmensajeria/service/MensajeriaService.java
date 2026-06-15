@@ -11,34 +11,46 @@ import org.springframework.stereotype.Service;
 import com.homerentsolution.msmensajeria.client.InquilinoClient;
 import com.homerentsolution.msmensajeria.client.ReservaClient;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
 public class MensajeriaService {
 
+    private static final Logger log =
+            LoggerFactory.getLogger(MensajeriaService.class);
+
     @Autowired
     private MensajeriaRepository repository;
 
-    //se agrega Feign para comunicación entre servicios
+    // Comunicación con microservicio Inquilino
     @Autowired
     private InquilinoClient inquilinoClient;
 
-    // Feign para comunicación con reservas
+    // Comunicación con microservicio Reserva
     @Autowired
     private ReservaClient reservaClient;
 
-    // el CRUD completo
-    //listartodo mensajeria
+    // Listar todos los mensajes
     public List<Mensajeria> listar() {
+
+        log.info("Consultando todos los mensajes");
 
         return repository.findAll();
     }
 
-    //guardar en mesjaeriaResponseDto
+    // Guardar mensaje
     public MensajeriaResponseDTO guardar(MensajeriaRequestDTO dto) {
 
-        // Convertir DTO a Entity
+        log.info(
+                "Intentando enviar mensaje desde {} hacia {}",
+                dto.getIdEmisor(),
+                dto.getIdReceptor()
+        );
+
         Mensajeria mensaje = new Mensajeria();
 
         mensaje.setContenido(dto.getContenido());
@@ -48,12 +60,14 @@ public class MensajeriaService {
         // Regla de negocio
         if (mensaje.getIdEmisor().equals(mensaje.getIdReceptor())) {
 
+            log.warn("El usuario intenta enviarse un mensaje a sí mismo");
+
             throw new RuntimeException(
                     "No puedes enviarte mensajes a ti mismo"
             );
         }
 
-        // Validar existencia del emisor
+        // Validar emisor
         Boolean emisorExiste =
                 inquilinoClient.validarInquilino(
                         dto.getIdEmisor()
@@ -61,12 +75,17 @@ public class MensajeriaService {
 
         if (!emisorExiste) {
 
+            log.warn(
+                    "El emisor {} no existe",
+                    dto.getIdEmisor()
+            );
+
             throw new RuntimeException(
                     "El emisor no existe"
             );
         }
 
-        // Validar existencia del receptor
+        // Validar receptor
         Boolean receptorExiste =
                 inquilinoClient.validarInquilino(
                         dto.getIdReceptor()
@@ -74,57 +93,99 @@ public class MensajeriaService {
 
         if (!receptorExiste) {
 
+            log.warn(
+                    "El receptor {} no existe",
+                    dto.getIdReceptor()
+            );
+
             throw new RuntimeException(
                     "El receptor no existe"
             );
         }
 
-        // Validar existencia de reserva
+        // Validar reserva
         try {
 
             reservaClient.buscarReserva(1);
 
         } catch (Exception e) {
 
+            log.error(
+                    "No existe una reserva válida para permitir mensajería"
+            );
+
             throw new RuntimeException(
                     "No existe una reserva válida para permitir mensajería"
             );
         }
 
-        // Fecha automática
         mensaje.setFecha(LocalDateTime.now());
 
-        // Guardar en BD
-        Mensajeria guardado = repository.save(mensaje);
+        Mensajeria guardado =
+                repository.save(mensaje);
 
-        // Convertir Entity a ResponseDTO
+        log.info(
+                "Mensaje guardado correctamente con ID {}",
+                guardado.getIdMensaje()
+        );
+
         MensajeriaResponseDTO response =
                 new MensajeriaResponseDTO();
 
-        response.setIdMensaje(guardado.getIdMensaje());
-        response.setContenido(guardado.getContenido());
-        response.setIdEmisor(guardado.getIdEmisor());
-        response.setIdReceptor(guardado.getIdReceptor());
-        response.setFecha(guardado.getFecha());
+        response.setIdMensaje(
+                guardado.getIdMensaje()
+        );
+
+        response.setContenido(
+                guardado.getContenido()
+        );
+
+        response.setIdEmisor(
+                guardado.getIdEmisor()
+        );
+
+        response.setIdReceptor(
+                guardado.getIdReceptor()
+        );
+
+        response.setFecha(
+                guardado.getFecha()
+        );
 
         return response;
     }
 
-    //buscar por Id
+    // Buscar por ID
     public Mensajeria buscarPorId(Long id) {
 
-        return repository.findById(id)
-                .orElseThrow(() ->
+        log.info(
+                "Buscando mensaje con ID {}",
+                id
+        );
 
-                        new RuntimeException(
-                                "Mensaje no encontrado"
-                        ));
+        return repository.findById(id)
+                .orElseThrow(() -> {
+
+                    log.warn(
+                            "Mensaje {} no encontrado",
+                            id
+                    );
+
+                    return new RuntimeException(
+                            "Mensaje no encontrado"
+                    );
+                });
     }
 
-    //actualizar
+    // Actualizar mensaje
     public Mensajeria actualizar(
             Long id,
             Mensajeria mensajeActualizado) {
+
+        log.info(
+                "Actualizando mensaje {}",
+                id
+        );
 
         Mensajeria mensaje = repository.findById(id)
                 .orElseThrow(() ->
@@ -145,11 +206,24 @@ public class MensajeriaService {
                 mensajeActualizado.getIdReceptor()
         );
 
-        return repository.save(mensaje);
+        Mensajeria actualizado =
+                repository.save(mensaje);
+
+        log.info(
+                "Mensaje {} actualizado correctamente",
+                id
+        );
+
+        return actualizado;
     }
 
-    //eliminar
+    // Eliminar mensaje
     public void eliminar(Long id) {
+
+        log.warn(
+                "Eliminando mensaje {}",
+                id
+        );
 
         Mensajeria mensaje = repository.findById(id)
                 .orElseThrow(() ->
@@ -159,11 +233,21 @@ public class MensajeriaService {
                         ));
 
         repository.delete(mensaje);
+
+        log.info(
+                "Mensaje {} eliminado correctamente",
+                id
+        );
     }
 
     // Buscar mensajes por emisor
     public List<Mensajeria> buscarPorEmisor(
             Long idEmisor) {
+
+        log.info(
+                "Buscando mensajes del emisor {}",
+                idEmisor
+        );
 
         List<Mensajeria> mensajes =
                 repository.findByIdEmisorOrderByFechaDesc(
@@ -184,8 +268,15 @@ public class MensajeriaService {
     public List<Mensajeria> buscarPorReceptor(
             Long idReceptor) {
 
+        log.info(
+                "Buscando mensajes del receptor {}",
+                idReceptor
+        );
+
         List<Mensajeria> mensajes =
-                repository.findByIdReceptor(idReceptor);
+                repository.findByIdReceptor(
+                        idReceptor
+                );
 
         if (mensajes.isEmpty()) {
 
@@ -197,13 +288,19 @@ public class MensajeriaService {
         return mensajes;
     }
 
-    // Buscar conversación entre emisor y receptor
+    // Buscar conversación
     public List<Mensajeria> buscarConversacion(
             Long idEmisor,
             Long idReceptor) {
 
+        log.info(
+                "Buscando conversación entre {} y {}",
+                idEmisor,
+                idReceptor
+        );
+
         List<Mensajeria> mensajes =
-                repository.findByIdEmisorAndIdReceptor(
+                repository.obtenerConversacion(
                         idEmisor,
                         idReceptor
                 );
