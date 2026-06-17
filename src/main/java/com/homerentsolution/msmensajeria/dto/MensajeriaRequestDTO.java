@@ -6,12 +6,21 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 @Getter
 @Setter
+@Schema(
+        name = "MensajeriaRequestDTO",
+        description = "Datos necesarios para crear un mensaje"
+)
 public class MensajeriaRequestDTO {
 
     //Validaciones contenido
+    @Schema(
+            description = "Contenido del mensaje",
+            example = "Hola, ¿cómo estás?"
+    )
     @NotBlank(
             message = "El contenido no puede estar vacío"
     )
@@ -25,6 +34,10 @@ public class MensajeriaRequestDTO {
     private String contenido;
 
     //validacion id emisor
+    @Schema(
+            description = "ID del usuario emisor",
+            example = "1"
+    )
     @NotNull(
             message = "El ID del emisor es obligatorio"
     )
@@ -35,6 +48,10 @@ public class MensajeriaRequestDTO {
     private Long idEmisor;
 
     //validacion id receptor
+    @Schema(
+            description = "ID del usuario receptor",
+            example = "2"
+    )
     @NotNull(
             message = "El ID del receptor es obligatorio"
     )

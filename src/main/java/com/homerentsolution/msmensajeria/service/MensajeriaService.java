@@ -35,11 +35,14 @@ public class MensajeriaService {
     private ReservaClient reservaClient;
 
     // Listar todos los mensajes
-    public List<Mensajeria> listar() {
+    public List<MensajeriaResponseDTO> listar() {
 
         log.info("Consultando todos los mensajes");
 
-        return repository.findAll();
+        return repository.findAll()
+                .stream()
+                .map(this::convertirDTO)
+                .toList();
     }
 
     // Guardar mensaje
@@ -156,14 +159,14 @@ public class MensajeriaService {
     }
 
     // Buscar por ID
-    public Mensajeria buscarPorId(Long id) {
+    public MensajeriaResponseDTO buscarPorId(Long id) {
 
         log.info(
                 "Buscando mensaje con ID {}",
                 id
         );
 
-        return repository.findById(id)
+        Mensajeria mensaje = repository.findById(id)
                 .orElseThrow(() -> {
 
                     log.warn(
@@ -175,10 +178,12 @@ public class MensajeriaService {
                             "Mensaje no encontrado"
                     );
                 });
+
+        return convertirDTO(mensaje);
     }
 
     // Actualizar mensaje
-    public Mensajeria actualizar(
+    public MensajeriaResponseDTO actualizar(
             Long id,
             Mensajeria mensajeActualizado) {
 
@@ -214,7 +219,7 @@ public class MensajeriaService {
                 id
         );
 
-        return actualizado;
+        return convertirDTO(actualizado);
     }
 
     // Eliminar mensaje
@@ -241,7 +246,7 @@ public class MensajeriaService {
     }
 
     // Buscar mensajes por emisor
-    public List<Mensajeria> buscarPorEmisor(
+    public List<MensajeriaResponseDTO> buscarPorEmisor(
             Long idEmisor) {
 
         log.info(
@@ -261,11 +266,13 @@ public class MensajeriaService {
             );
         }
 
-        return mensajes;
+        return mensajes.stream()
+                .map(this::convertirDTO)
+                .toList();
     }
 
     // Buscar mensajes por receptor
-    public List<Mensajeria> buscarPorReceptor(
+    public List<MensajeriaResponseDTO> buscarPorReceptor(
             Long idReceptor) {
 
         log.info(
@@ -285,11 +292,13 @@ public class MensajeriaService {
             );
         }
 
-        return mensajes;
+        return mensajes.stream()
+                .map(this::convertirDTO)
+                .toList();
     }
 
     // Buscar conversación
-    public List<Mensajeria> buscarConversacion(
+    public List<MensajeriaResponseDTO> buscarConversacion(
             Long idEmisor,
             Long idReceptor) {
 
@@ -312,6 +321,36 @@ public class MensajeriaService {
             );
         }
 
-        return mensajes;
+        return mensajes.stream()
+                .map(this::convertirDTO)
+                .toList();
+    }
+    private MensajeriaResponseDTO convertirDTO(
+            Mensajeria mensaje) {
+
+        MensajeriaResponseDTO dto =
+                new MensajeriaResponseDTO();
+
+        dto.setIdMensaje(
+                mensaje.getIdMensaje()
+        );
+
+        dto.setContenido(
+                mensaje.getContenido()
+        );
+
+        dto.setIdEmisor(
+                mensaje.getIdEmisor()
+        );
+
+        dto.setIdReceptor(
+                mensaje.getIdReceptor()
+        );
+
+        dto.setFecha(
+                mensaje.getFecha()
+        );
+
+        return dto;
     }
 }

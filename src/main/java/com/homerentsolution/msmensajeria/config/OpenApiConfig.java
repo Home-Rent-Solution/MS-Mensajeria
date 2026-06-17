@@ -13,10 +13,10 @@ public class OpenApiConfig {
         return new OpenAPI()
                 .info(
                         new Info()
-                                .title("API Mensajería")
-                                .version("1.0")
+                                .title("HomeRentSolution-API Mensajería")
+                                .version("v1")
                                 .description(
-                                        "Microservicio de gestión de mensajes Home Rent Solution"
+                                        "Microservicio encargado de la gestión de mensajes entre usuarios"
                                 )
                 );
     }
