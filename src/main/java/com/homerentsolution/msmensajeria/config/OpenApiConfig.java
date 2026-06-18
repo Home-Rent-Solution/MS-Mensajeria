@@ -6,7 +6,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
+
+//Configuracion general de Swagger/OpenApi
 public class OpenApiConfig {
+
+    // Define la información visible en Swagger UI
     @Bean
     public OpenAPI customOpenAPI() {
 

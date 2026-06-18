@@ -16,7 +16,7 @@ public interface MensajeriaRepository extends JpaRepository<Mensajeria, Long> {
     );
 
     // Mensajes recibidos por un receptor
-    List<Mensajeria> findByIdReceptor(
+    List<Mensajeria> findByIdReceptorOrderByFechaDesc(
             Long idReceptor
     );
 

@@ -17,6 +17,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public class MensajeriaRequestDTO {
 
     //Validaciones contenido
+    // @Schema Define la documentación del DTO en Swagger
     @Schema(
             description = "Contenido del mensaje",
             example = "Hola, ¿cómo estás?"
