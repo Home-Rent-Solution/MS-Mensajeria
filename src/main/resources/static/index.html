@@ -1,0 +1,527 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Home Rent Solution | Mensajería</title>
+    <style>
+        :root {
+            --bg: #0f172a;
+            --panel: rgba(15, 23, 42, 0.84);
+            --card: #111827;
+            --muted: #94a3b8;
+            --text: #e5e7eb;
+            --primary: #38bdf8;
+            --primary-dark: #0284c7;
+            --accent: #a78bfa;
+            --danger: #fb7185;
+            --success: #34d399;
+            --border: rgba(148, 163, 184, 0.25);
+            --shadow: 0 24px 80px rgba(0, 0, 0, 0.35);
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(circle at top left, rgba(56, 189, 248, 0.28), transparent 32rem),
+                radial-gradient(circle at bottom right, rgba(167, 139, 250, 0.28), transparent 34rem),
+                var(--bg);
+        }
+
+        header {
+            padding: 3rem 1.25rem 1.5rem;
+            text-align: center;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.45rem 0.8rem;
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            background: rgba(15, 23, 42, 0.72);
+            color: var(--success);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: clamp(2rem, 4vw, 4rem);
+            letter-spacing: -0.05em;
+        }
+
+        header p {
+            max-width: 760px;
+            margin: 1rem auto 0;
+            color: var(--muted);
+            font-size: 1.05rem;
+            line-height: 1.6;
+        }
+
+        main {
+            width: min(1180px, calc(100% - 2rem));
+            margin: 0 auto 3rem;
+            display: grid;
+            grid-template-columns: minmax(320px, 420px) 1fr;
+            gap: 1rem;
+        }
+
+        .panel {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(18px);
+        }
+
+        .form-panel { padding: 1.25rem; }
+
+        .list-panel {
+            padding: 1.25rem;
+            min-height: 520px;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        h2 {
+            margin: 0;
+            font-size: 1.15rem;
+        }
+
+        label {
+            display: block;
+            margin: 0.9rem 0 0.35rem;
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+
+        input, textarea {
+            width: 100%;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            background: rgba(15, 23, 42, 0.88);
+            color: var(--text);
+            padding: 0.85rem 0.95rem;
+            outline: none;
+            font: inherit;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        textarea { min-height: 110px; resize: vertical; }
+
+        input:focus, textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.12);
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.65rem;
+            margin-top: 1rem;
+        }
+
+        button, a.button {
+            border: 0;
+            border-radius: 14px;
+            padding: 0.82rem 1rem;
+            color: white;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            cursor: pointer;
+            font-weight: 700;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.45rem;
+            transition: transform 0.16s, opacity 0.16s;
+        }
+
+        button:hover, a.button:hover { transform: translateY(-1px); }
+        button:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+
+        .secondary { background: rgba(148, 163, 184, 0.16); color: var(--text); border: 1px solid var(--border); }
+        .danger { background: linear-gradient(135deg, var(--danger), #e11d48); }
+        .accent { background: linear-gradient(135deg, var(--accent), #7c3aed); }
+
+        .filters {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.65rem;
+            margin-bottom: 1rem;
+        }
+
+        .message-grid {
+            display: grid;
+            gap: 0.85rem;
+        }
+
+        .message-card {
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            background: rgba(17, 24, 39, 0.84);
+            padding: 1rem;
+        }
+
+        .message-card header {
+            padding: 0;
+            text-align: left;
+            display: flex;
+            align-items: start;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .message-card h3 {
+            margin: 0;
+            font-size: 1rem;
+        }
+
+        .message-card p {
+            margin: 0.75rem 0;
+            color: #cbd5e1;
+            line-height: 1.5;
+        }
+
+        .meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.45rem;
+            color: var(--muted);
+            font-size: 0.82rem;
+        }
+
+        .pill {
+            padding: 0.3rem 0.55rem;
+            border-radius: 999px;
+            background: rgba(148, 163, 184, 0.12);
+            border: 1px solid var(--border);
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 0.85rem;
+        }
+
+        .card-actions button { padding: 0.55rem 0.75rem; font-size: 0.85rem; }
+
+        .status {
+            margin-top: 1rem;
+            min-height: 1.4rem;
+            color: var(--muted);
+            font-size: 0.92rem;
+        }
+
+        .status.ok { color: var(--success); }
+        .status.error { color: var(--danger); }
+
+        .empty {
+            color: var(--muted);
+            text-align: center;
+            padding: 3rem 1rem;
+            border: 1px dashed var(--border);
+            border-radius: 18px;
+        }
+
+        footer {
+            text-align: center;
+            color: var(--muted);
+            padding: 0 1rem 2rem;
+        }
+
+        @media (max-width: 880px) {
+            main { grid-template-columns: 1fr; }
+            .filters { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div class="badge">● MS-Mensajería activo en Render</div>
+    <h1>Home Rent Solution</h1>
+    <p>Interfaz simple para probar el CRUD del microservicio de mensajería. Esta página consume los mismos endpoints REST documentados en Swagger.</p>
+</header>
+
+<main>
+    <section class="panel form-panel">
+        <div class="section-title">
+            <h2 id="formTitle">Crear mensaje</h2>
+            <a class="button secondary" href="/swagger-ui/index.html" target="_blank" rel="noopener">Swagger</a>
+        </div>
+
+        <form id="messageForm">
+            <input type="hidden" id="idMensaje" />
+
+            <label for="contenido">Contenido</label>
+            <textarea id="contenido" placeholder="Ej: Tu reserva fue confirmada" required></textarea>
+
+            <div class="row">
+                <div>
+                    <label for="idEmisor">ID emisor</label>
+                    <input id="idEmisor" type="number" min="1" placeholder="1" required />
+                </div>
+                <div>
+                    <label for="idReceptor">ID receptor</label>
+                    <input id="idReceptor" type="number" min="1" placeholder="2" required />
+                </div>
+            </div>
+
+            <div class="actions">
+                <button type="submit" id="saveButton">Guardar</button>
+                <button type="button" class="secondary" id="clearButton">Limpiar</button>
+            </div>
+        </form>
+
+        <div class="status" id="status"></div>
+    </section>
+
+    <section class="panel list-panel">
+        <div class="section-title">
+            <h2>Mensajes registrados</h2>
+            <button type="button" class="secondary" id="refreshButton">Actualizar</button>
+        </div>
+
+        <div class="filters">
+            <input id="searchId" type="number" min="1" placeholder="Buscar por ID" />
+            <input id="searchEmisor" type="number" min="1" placeholder="Filtrar emisor" />
+            <input id="searchReceptor" type="number" min="1" placeholder="Filtrar receptor" />
+        </div>
+
+        <div class="actions" style="margin-top: 0; margin-bottom: 1rem;">
+            <button type="button" class="accent" id="searchIdButton">Buscar ID</button>
+            <button type="button" class="secondary" id="filterEmisorButton">Por emisor</button>
+            <button type="button" class="secondary" id="filterReceptorButton">Por receptor</button>
+            <button type="button" class="secondary" id="showAllButton">Ver todos</button>
+        </div>
+
+        <div class="message-grid" id="messages"></div>
+    </section>
+</main>
+
+<footer>
+    MS-Mensajería funcionando en modo Render standalone: CRUD local sin llamadas Feign a otros microservicios.
+</footer>
+
+<script>
+    const API = "/api/v1/mensajes";
+
+    const form = document.getElementById("messageForm");
+    const idMensaje = document.getElementById("idMensaje");
+    const contenido = document.getElementById("contenido");
+    const idEmisor = document.getElementById("idEmisor");
+    const idReceptor = document.getElementById("idReceptor");
+    const messages = document.getElementById("messages");
+    const statusBox = document.getElementById("status");
+    const formTitle = document.getElementById("formTitle");
+    const saveButton = document.getElementById("saveButton");
+
+    function setStatus(message, type = "") {
+        statusBox.textContent = message;
+        statusBox.className = `status ${type}`;
+    }
+
+    async function request(url, options = {}) {
+        const response = await fetch(url, {
+            headers: { "Content-Type": "application/json" },
+            ...options
+        });
+
+        if (!response.ok) {
+            let detail = "Error al ejecutar la operación";
+            try {
+                const body = await response.json();
+                detail = body.mensaje || body.message || detail;
+            } catch (_) {}
+            throw new Error(detail);
+        }
+
+        if (response.status === 204) return null;
+        return response.json();
+    }
+
+    function formatDate(value) {
+        if (!value) return "Sin fecha";
+        return new Date(value).toLocaleString("es-CL", {
+            dateStyle: "medium",
+            timeStyle: "short"
+        });
+    }
+
+    function renderMessages(data) {
+        const list = Array.isArray(data) ? data : [data];
+
+        if (!list.length) {
+            messages.innerHTML = `<div class="empty">No hay mensajes para mostrar.</div>`;
+            return;
+        }
+
+        messages.innerHTML = list.map(message => `
+            <article class="message-card">
+                <header>
+                    <div>
+                        <h3>Mensaje #${message.idMensaje}</h3>
+                        <div class="meta">
+                            <span class="pill">Emisor: ${message.idEmisor}</span>
+                            <span class="pill">Receptor: ${message.idReceptor}</span>
+                            <span class="pill">${formatDate(message.fecha)}</span>
+                        </div>
+                    </div>
+                </header>
+                <p>${escapeHtml(message.contenido)}</p>
+                <div class="card-actions">
+                    <button type="button" class="accent" onclick='editMessage(${JSON.stringify(message)})'>Editar</button>
+                    <button type="button" class="danger" onclick="deleteMessage(${message.idMensaje})">Eliminar</button>
+                </div>
+            </article>
+        `).join("");
+    }
+
+    function escapeHtml(value) {
+        return String(value || "")
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#039;");
+    }
+
+    async function loadMessages() {
+        setStatus("Cargando mensajes...");
+        try {
+            const data = await request(API);
+            renderMessages(data);
+            setStatus("Mensajes cargados correctamente.", "ok");
+        } catch (error) {
+            messages.innerHTML = `<div class="empty">No se pudieron cargar los mensajes.</div>`;
+            setStatus(error.message, "error");
+        }
+    }
+
+    window.editMessage = function(message) {
+        idMensaje.value = message.idMensaje;
+        contenido.value = message.contenido;
+        idEmisor.value = message.idEmisor;
+        idReceptor.value = message.idReceptor;
+        formTitle.textContent = `Editar mensaje #${message.idMensaje}`;
+        saveButton.textContent = "Actualizar";
+        setStatus("Editando mensaje seleccionado.");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    };
+
+    window.deleteMessage = async function(id) {
+        if (!confirm(`¿Eliminar mensaje #${id}?`)) return;
+        try {
+            await request(`${API}/${id}`, { method: "DELETE" });
+            setStatus(`Mensaje #${id} eliminado.`, "ok");
+            await loadMessages();
+        } catch (error) {
+            setStatus(error.message, "error");
+        }
+    };
+
+    form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        const payload = {
+            contenido: contenido.value.trim(),
+            idEmisor: Number(idEmisor.value),
+            idReceptor: Number(idReceptor.value)
+        };
+
+        const editing = Boolean(idMensaje.value);
+        const url = editing ? `${API}/${idMensaje.value}` : API;
+        const method = editing ? "PUT" : "POST";
+
+        try {
+            await request(url, {
+                method,
+                body: JSON.stringify(payload)
+            });
+            setStatus(editing ? "Mensaje actualizado." : "Mensaje creado.", "ok");
+            clearForm();
+            await loadMessages();
+        } catch (error) {
+            setStatus(error.message, "error");
+        }
+    });
+
+    function clearForm() {
+        form.reset();
+        idMensaje.value = "";
+        formTitle.textContent = "Crear mensaje";
+        saveButton.textContent = "Guardar";
+    }
+
+    document.getElementById("clearButton").addEventListener("click", () => {
+        clearForm();
+        setStatus("Formulario limpio.");
+    });
+
+    document.getElementById("refreshButton").addEventListener("click", loadMessages);
+    document.getElementById("showAllButton").addEventListener("click", loadMessages);
+
+    document.getElementById("searchIdButton").addEventListener("click", async () => {
+        const id = document.getElementById("searchId").value;
+        if (!id) return setStatus("Ingresa un ID para buscar.", "error");
+        try {
+            const data = await request(`${API}/${id}`);
+            renderMessages(data);
+            setStatus(`Mensaje #${id} encontrado.`, "ok");
+        } catch (error) {
+            renderMessages([]);
+            setStatus(error.message, "error");
+        }
+    });
+
+    document.getElementById("filterEmisorButton").addEventListener("click", async () => {
+        const id = document.getElementById("searchEmisor").value;
+        if (!id) return setStatus("Ingresa un ID de emisor.", "error");
+        try {
+            const data = await request(`${API}/emisor/${id}`);
+            renderMessages(data);
+            setStatus(`Mensajes del emisor ${id}.`, "ok");
+        } catch (error) {
+            renderMessages([]);
+            setStatus(error.message, "error");
+        }
+    });
+
+    document.getElementById("filterReceptorButton").addEventListener("click", async () => {
+        const id = document.getElementById("searchReceptor").value;
+        if (!id) return setStatus("Ingresa un ID de receptor.", "error");
+        try {
+            const data = await request(`${API}/receptor/${id}`);
+            renderMessages(data);
+            setStatus(`Mensajes del receptor ${id}.`, "ok");
+        } catch (error) {
+            renderMessages([]);
+            setStatus(error.message, "error");
+        }
+    });
+
+    loadMessages();
+</script>
+</body>
+</html>
