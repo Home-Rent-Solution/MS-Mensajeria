@@ -69,11 +69,15 @@
             <artifactId>h2</artifactId>
             <scope>test</scope>
         </dependency>
-
+        <!--
+        Render standalone:
+        Dependencia Feign comentada para que MS-Mensajeria compile/despliegue sin clients remotos.
+        Reactivar junto con @EnableFeignClients y los @FeignClient cuando se despliegue el ecosistema completo.
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
         </dependency>
+        -->
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
@@ -98,6 +102,10 @@
             <artifactId>datafaker</artifactId>
             <version>2.4.3</version>
         </dependency>
+        <!--
+        Render standalone:
+        Eureka y LoadBalancer comentados porque Render levantará solo MS-Mensajeria.
+        Reactivar para despliegue local/compose con discovery entre microservicios.
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
@@ -106,6 +114,7 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-loadbalancer</artifactId>
         </dependency>
+        -->
 
     </dependencies>
 
@@ -215,3 +224,4 @@
     </build>
 
 </project>
+

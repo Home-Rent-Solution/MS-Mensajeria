@@ -115,15 +115,20 @@ class MensajeriaServiceTest {
         dto.setContenido("Hola, ¿cómo estás?");
         dto.setIdEmisor(1L);
         dto.setIdReceptor(2L);
-
-        when(inquilinoClient.validarInquilino(1L))
-                .thenReturn(true);
-
-        when(inquilinoClient.validarInquilino(2L))
-                .thenReturn(true);
-
-        when(reservaClient.buscarReserva(1))
-                .thenReturn(new Object());
+        /*
+         * Render standalone:
+         * Validaciones remotas comentadas porque MS-Mensajeria se despliega solo en Render.
+         * Reactivar cuando Feign vuelva a estar habilitado.
+         *
+         * when(inquilinoClient.validarInquilino(1L))
+         *         .thenReturn(true);
+         *
+         * when(inquilinoClient.validarInquilino(2L))
+         *         .thenReturn(true);
+         *
+         * when(reservaClient.buscarReserva(1))
+         *         .thenReturn(new Object());
+         */
 
         Mensajeria guardado = new Mensajeria();
         guardado.setIdMensaje(1L);
@@ -144,15 +149,20 @@ class MensajeriaServiceTest {
         assertEquals(1L, resultado.getIdMensaje());
         assertEquals("Hola, ¿cómo estás?",
                 resultado.getContenido());
-
-        verify(inquilinoClient, times(1))
-                .validarInquilino(1L);
-
-        verify(inquilinoClient, times(1))
-                .validarInquilino(2L);
-
-        verify(reservaClient, times(1))
-                .buscarReserva(1);
+        /*
+         * Render standalone:
+         * Verificaciones Feign suspendidas mientras el CRUD trabaja solo con la BD local.
+         *
+         * verify(inquilinoClient, times(1))
+         *         .validarInquilino(1L);
+         *
+         * verify(inquilinoClient, times(1))
+         *         .validarInquilino(2L);
+         *
+         * verify(reservaClient, times(1))
+         *         .buscarReserva(1);
+         */
+        verifyNoInteractions(inquilinoClient, reservaClient);
 
         verify(repository, times(1))
                 .save(any(Mensajeria.class));

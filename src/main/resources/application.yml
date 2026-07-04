@@ -22,15 +22,20 @@ server:
   port: ${PORT:8080}
   forward-headers-strategy: framework
 
+# Render standalone:
+# Eureka queda apagado porque Render levantará solo este microservicio.
 eureka:
   client:
     enabled: false
 
-ms:
-  inquilinos:
-    url: ${MS_INQUILINOS_URL:http://localhost:8083}
-  reservas:
-    url: ${MS_RESERVAS_URL:http://localhost:8084}
+# Render standalone:
+# URLs remotas comentadas para evitar llamadas a microservicios dormidos/no desplegados.
+# Reactivar cuando se despliegue el ecosistema completo.
+# ms:
+#   inquilinos:
+#     url: ${MS_INQUILINOS_URL:http://localhost:8083}
+#   reservas:
+#     url: ${MS_RESERVAS_URL:http://localhost:8084}
 
 ---
 spring:

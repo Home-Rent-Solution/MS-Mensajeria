@@ -5,11 +5,17 @@ import com.homerentsolution.msmensajeria.dto.MensajeriaResponseDTO;
 import com.homerentsolution.msmensajeria.model.Mensajeria;
 import com.homerentsolution.msmensajeria.repository.MensajeriaRepository;
 
+/*
+ * Render standalone:
+ * Imports Feign originales comentados para no perder la información.
+ * Reactivar cuando MS-Inquilinos y MS-Reservas estén desplegados/activos junto a Mensajeria.
+ *
+ * import com.homerentsolution.msmensajeria.client.InquilinoClient;
+ * import com.homerentsolution.msmensajeria.client.ReservaClient;
+ */
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.homerentsolution.msmensajeria.client.InquilinoClient;
-import com.homerentsolution.msmensajeria.client.ReservaClient;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,13 +32,18 @@ public class MensajeriaService {
     @Autowired
     private MensajeriaRepository repository;
 
-    @Autowired
-    private InquilinoClient inquilinoClient;
+    /*
+     * Render standalone:
+     * Clients Feign originales comentados. Si se dejan activos en Render con solo este MS,
+     * las llamadas a servicios dormidos pueden generar demoras o fallos.
+     *
+     * @Autowired
+     * private InquilinoClient inquilinoClient;
+     *
+     * @Autowired
+     * private ReservaClient reservaClient;
+     */
 
-    @Autowired
-    private ReservaClient reservaClient;
-
-    // Listar todos
     public List<MensajeriaResponseDTO> listar() {
         log.info("Consultando todos los mensajes");
 
@@ -42,29 +53,34 @@ public class MensajeriaService {
                 .toList();
     }
 
-    // Guardar
     public MensajeriaResponseDTO guardar(MensajeriaRequestDTO dto) {
 
-        log.info("Enviando mensaje de {} a {}",
+        log.info("Guardando mensaje de {} a {}",
                 dto.getIdEmisor(), dto.getIdReceptor());
 
         if (dto.getIdEmisor().equals(dto.getIdReceptor())) {
             throw new RuntimeException("No puedes enviarte mensajes a ti mismo");
         }
 
-        if (!inquilinoClient.validarInquilino(dto.getIdEmisor())) {
-            throw new RuntimeException("El emisor no existe");
-        }
-
-        if (!inquilinoClient.validarInquilino(dto.getIdReceptor())) {
-            throw new RuntimeException("El receptor no existe");
-        }
-
-        try {
-            reservaClient.buscarReserva(1);
-        } catch (Exception e) {
-            throw new RuntimeException("No existe una reserva válida");
-        }
+        /*
+         * Render standalone:
+         * Validaciones remotas comentadas temporalmente. El CRUD queda local para Render.
+         * Reactivar cuando MS-Inquilinos y MS-Reservas estén levantados y disponibles.
+         *
+         * if (!inquilinoClient.validarInquilino(dto.getIdEmisor())) {
+         *     throw new RuntimeException("El emisor no existe");
+         * }
+         *
+         * if (!inquilinoClient.validarInquilino(dto.getIdReceptor())) {
+         *     throw new RuntimeException("El receptor no existe");
+         * }
+         *
+         * try {
+         *     reservaClient.buscarReserva(1);
+         * } catch (Exception e) {
+         *     throw new RuntimeException("No existe una reserva válida");
+         * }
+         */
 
         Mensajeria mensaje = new Mensajeria();
         mensaje.setContenido(dto.getContenido());
@@ -77,7 +93,6 @@ public class MensajeriaService {
         return convertirDTO(guardado);
     }
 
-    // Buscar por ID
     public MensajeriaResponseDTO buscarPorId(Long id) {
 
         Mensajeria mensaje = repository.findById(id)
@@ -86,16 +101,17 @@ public class MensajeriaService {
         return convertirDTO(mensaje);
     }
 
-    //actualizar
-    public MensajeriaResponseDTO actualizar(
-            Long id,
-            MensajeriaRequestDTO dto) {
+    public MensajeriaResponseDTO actualizar(Long id, MensajeriaRequestDTO dto) {
 
         log.info("Actualizando mensaje {}", id);
 
         Mensajeria mensaje = repository.findById(id)
                 .orElseThrow(() ->
                         new RuntimeException("Mensaje no encontrado"));
+
+        if (dto.getIdEmisor().equals(dto.getIdReceptor())) {
+            throw new RuntimeException("No puedes enviarte mensajes a ti mismo");
+        }
 
         mensaje.setContenido(dto.getContenido());
         mensaje.setIdEmisor(dto.getIdEmisor());
@@ -106,7 +122,6 @@ public class MensajeriaService {
         return convertirDTO(actualizado);
     }
 
-    // Eliminar
     public void eliminar(Long id) {
 
         Mensajeria mensaje = repository.findById(id)
@@ -116,7 +131,6 @@ public class MensajeriaService {
         repository.delete(mensaje);
     }
 
-    // Buscar por emisor
     public List<MensajeriaResponseDTO> buscarPorEmisor(Long idEmisor) {
 
         List<Mensajeria> mensajes =
@@ -131,7 +145,6 @@ public class MensajeriaService {
                 .toList();
     }
 
-    // Buscar por receptor
     public List<MensajeriaResponseDTO> buscarPorReceptor(Long idReceptor) {
 
         List<Mensajeria> mensajes =
@@ -146,7 +159,6 @@ public class MensajeriaService {
                 .toList();
     }
 
-    // Conversación
     public List<MensajeriaResponseDTO> buscarConversacion(
             Long idEmisor,
             Long idReceptor) {
@@ -163,7 +175,6 @@ public class MensajeriaService {
                 .toList();
     }
 
-    // Mapper
     private MensajeriaResponseDTO convertirDTO(Mensajeria mensaje) {
 
         MensajeriaResponseDTO dto = new MensajeriaResponseDTO();
