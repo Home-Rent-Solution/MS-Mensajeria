@@ -6,6 +6,7 @@ import com.homerentsolution.msmensajeria.dto.MensajeriaRequestDTO;
 import com.homerentsolution.msmensajeria.dto.MensajeriaResponseDTO;
 import jakarta.validation.Valid;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,6 +34,7 @@ public class MensajeriaController {
     //Inyeccion de dependencias mediante constructor
     private final MensajeriaService service;
 
+    @Autowired
     public MensajeriaController(MensajeriaService service) {
         this.service = service;
     }

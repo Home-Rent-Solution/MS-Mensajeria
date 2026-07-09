@@ -29,8 +29,12 @@ public class MensajeriaService {
     private static final Logger log =
             LoggerFactory.getLogger(MensajeriaService.class);
 
+    private final MensajeriaRepository repository;
+
     @Autowired
-    private MensajeriaRepository repository;
+    public MensajeriaService(MensajeriaRepository repository) {
+        this.repository = repository;
+    }
 
     /*
      * Render standalone:
