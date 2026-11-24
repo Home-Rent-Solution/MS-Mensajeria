@@ -5,10 +5,10 @@ spring:
     active: ${SPRING_PROFILES_ACTIVE:dev}
 
   datasource:
-    url: ${SPRING_DATASOURCE_URL}
-    username: ${SPRING_DATASOURCE_USERNAME}
-    password: ${SPRING_DATASOURCE_PASSWORD}
-    driver-class-name: org.postgresql.Driver
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/db_mensajeria?createDatabaseIfNotExist=true}
+    username: ${SPRING_DATASOURCE_USERNAME:root}
+    password: ${SPRING_DATASOURCE_PASSWORD:}
+    driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
     hibernate:
@@ -19,18 +19,16 @@ spring:
         format_sql: true
 
 server:
-  port: ${PORT:8080}
+  port: ${PORT:8087}
   forward-headers-strategy: framework
 
-# Render standalone:
-# Eureka queda apagado porque Render levantará solo este microservicio.
 eureka:
   client:
-    enabled: false
+    enabled: true
+    service-url:
+      defaultZone: ${EUREKA_URL:http://localhost:8761/eureka/}
 
-# Render standalone:
-# URLs remotas comentadas para evitar llamadas a microservicios dormidos/no desplegados.
-# Reactivar cuando se despliegue el ecosistema completo.
+# Las llamadas Feign a Inquilinos y Reservas siguen desactivadas (modo standalone).
 # ms:
 #   inquilinos:
 #     url: ${MS_INQUILINOS_URL:http://localhost:8083}
